@@ -1,74 +1,55 @@
-# Python-Mars-Weather
+# Sol. API
 
-A Python project that fetches and serves Mars weather data from NASA’s InSight lander API.  
-
----
-
-## 📌 About the Project
-
-Python-Mars-Weather is a structured project to fetch, model, and expose Mars weather data.  
-It demonstrates how to:
-
-- Work with REST APIs and environment variables
-- Parse nested JSON data
-- Structure reusable classes and methods
-- Serve data through a simple API
-- Model data objects for app-friendly consumption
-
-This project is **planned to be used as the backend** for my
-[Mars Weather Dashboard](https://github.com/dimitrilahanas/mars-weather-dashboard),
-which provides a frontend interface for visualising the data served by this API. 
+A FastAPI service that fetches, processes and serves Mars weather data from NASA's InSight lander. It's the backend for [**sol-app**](https://github.com/dimitrilahanas/sol-app).
 
 ---
 
-## ✨ Features
+## About
 
-- Fetch Mars weather data directly from NASA’s InSight API
-- List all available Martian Sols
-- Retrieve the most recent Sol
-- Return detailed weather data for a specific Sol:
+NASA's InSight API returns deeply nested JSON that isn't friendly for an app to consume directly. Sol. API handles the fetching, parsing and modelling, and exposes clean, flat endpoints instead.
+
+```
+NASA InSight API  →  sol-api (FastAPI)  →  sol-app (Flutter)
+```
+
+Built to practise:
+
+- Working with REST APIs and environment variables
+- Parsing nested JSON
+- Structuring reusable classes and models
+- Serving data through a simple API
+
+---
+
+## Features
+
+- List every available sol
+- Get the most recent sol
+- Get detailed weather for any sol:
   - Average temperature
-  - Current Martian season
+  - Martian season
   - Most common wind direction
   - Average wind speed
-- Exposed as a **FastAPI service** for easy consumption by other applications
 
 ---
 
-## 🗂 Tech Stack
+## Tech Stack
 
 - **Python 3.9+**
-- **FastAPI** – lightweight web API framework
-- **Requests** – HTTP requests to the NASA API
-- **python-dotenv** – for managing environment variables (NASA API key)
+- **FastAPI**: web API framework
+- **Requests**: calls to the NASA API
+- **python-dotenv**: loads the NASA API key from `.env`
 
 ---
 
-## 🗂 Project Structure
+## Endpoints
 
-python-mars-weather/ <br>
-├─ main.py             # FastAPI app with endpoints<br>
-├─ .env                # Stores NASA API key<br>
-├─ app/<br>
-│   ├─ __init__.py<br>
-│   ├─ mars_data.py    # MarsData class to fetch API data<br>
-│   ├─ commands.py     # Commands class to process and return Sol data<br>
-│   └─ models/<br>
-│       ├─ __init__.py<br>
-│       └─ sol.py      # Sol model<br>
+| Endpoint | Description |
+|---|---|
+| `GET /available` | List of all available sols |
+| `GET /{sol}` | Weather data for the given sol |
 
-
-
----
-
-### FastAPI Endpoints
-
-| Endpoint         | Description                               |
-|-----------------|-------------------------------------------|
-| `/available`     | Returns a list of all available Sols     |
-| `/{sol}`         | Returns weather data for the given Sol   |
-
-Example `/1001` response:
+Example `GET /1001`:
 
 ```json
 {
@@ -77,3 +58,53 @@ Example `/1001` response:
   "wind_direction": "NW",
   "wind_speed": 5.6
 }
+```
+
+Interactive docs are available at `/docs` while the server is running.
+
+---
+
+## Project Structure
+
+```
+sol-api/
+├── main.py             # FastAPI app and endpoints
+├── .env                # NASA API key (not committed)
+└── app/
+    ├── __init__.py
+    ├── mars_data.py    # MarsData: fetches raw data from NASA
+    ├── commands.py     # Commands: processes and returns sol data
+    └── models/
+        ├── __init__.py
+        └── sol.py      # Sol model
+```
+
+---
+
+## Getting Started
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/dimitrilahanas/sol-api.git
+   cd sol-api
+   ```
+2. Install dependencies:
+   ```bash
+   pip install fastapi uvicorn requests python-dotenv
+   ```
+3. Get a free API key from [api.nasa.gov](https://api.nasa.gov) and create a `.env` file:
+   ```
+   NASA_API_KEY=your_key_here
+   ```
+4. Run the server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+---
+
+## Status
+
+Complete and functional.
+
+> **Note:** NASA's InSight mission ended in December 2022, so the dataset is historical and covers the sols InSight recorded.
